@@ -31,6 +31,9 @@ import javax.swing.JFileChooser;
 import javax.swing.JOptionPane;
 import javax.swing.UIManager;
 import net.roarsoftware.lastfm.scrobble.Scrobbler;
+import ophelia.gui.slider.ProgressBarSlider;
+import ophelia.gui.slider.ProgressBarSliderListener;
+import ophelia.gui.slider.ProgressBarSliderUI;
 import ophelia.main.MediaPlayerController;
 import ophelia.main.Playlist;
 import ophelia.main.PlaylistController;
@@ -140,7 +143,9 @@ public class Main extends javax.swing.JFrame implements Observer {
         jButton_addDirectory = new javax.swing.JButton();
         jButton_addFiles = new javax.swing.JButton();
         jLabel2 = new javax.swing.JLabel();
-        jProgressBar1 = new javax.swing.JProgressBar();
+        jProgressBar1 = new ProgressBarSlider();
+        jProgressBar1.setUI(new ProgressBarSliderUI(jProgressBar1));
+        jProgressBar1.addChangeListener(new ProgressBarSliderListener());
         jLabel3 = new javax.swing.JLabel();
         jTabbedPane1 = new javax.swing.JTabbedPane();
         jScrollPane1 = new javax.swing.JScrollPane();
@@ -671,7 +676,9 @@ public class Main extends javax.swing.JFrame implements Observer {
 
         jProgressBar1.setForeground(new java.awt.Color(204, 0, 0));
         jProgressBar1.setString("");
-        jProgressBar1.setStringPainted(true);
+        jProgressBar1.setValue(0);
+        jProgressBar1.disable();
+        //jProgressBar1.setStringPainted(true);
 
         jLabel3.setText("...");
 
@@ -1034,6 +1041,7 @@ private void jButton_stopActionPerformed(java.awt.event.ActionEvent evt) {//GEN-
     mpController.stopTrack();
     jProgressBar1.setValue(0);
     jProgressBar1.setString("");
+    jProgressBar1.disable();
     setTitle(Settings.getInstance().getWindowTitleText());
     if (progressbarAnimation != null) {
         progressbarAnimation.stop();
@@ -1056,6 +1064,7 @@ private void jMenuItem_stopActionPerformed(java.awt.event.ActionEvent evt) {//GE
     mpController.stopTrack();
     jProgressBar1.setValue(0);
     jProgressBar1.setString("");
+    jProgressBar1.disable();
     setTitle(Settings.getInstance().getWindowTitleText());
 }//GEN-LAST:event_jMenuItem_stopActionPerformed
 
@@ -1299,7 +1308,7 @@ private void jMenuItem_openDefaultPlaylistActionPerformed(java.awt.event.ActionE
     private javax.swing.JPanel jPanel_license;
     private javax.swing.JPanel jPanel_thanksandcredit;
     private javax.swing.JPasswordField jPasswordField_lastfmPassword;
-    private javax.swing.JProgressBar jProgressBar1;
+    private ProgressBarSlider jProgressBar1;
     private javax.swing.JRadioButtonMenuItem jRadioButtonMenuItem1;
     private javax.swing.JRadioButtonMenuItem jRadioButtonMenuItem2;
     private javax.swing.JRadioButtonMenuItem jRadioButtonMenuItem3;
@@ -1377,6 +1386,7 @@ private void jMenuItem_openDefaultPlaylistActionPerformed(java.awt.event.ActionE
             if (jList_playlist1.getSelectedIndex() != jList_playlist1.getModel().getSize() - 1) {
                 nextTrack = (TrackWithID3) jList_playlist1.getModel().getElementAt(jList_playlist1.getSelectedIndex() + 1);
             }
+            jProgressBar1.enable();
             jProgressBar1.setString(selectedTrack.getOSDStatus());
             try {
                 if (Settings.getInstance().isTrackInWindowTitle()) {
@@ -1385,7 +1395,7 @@ private void jMenuItem_openDefaultPlaylistActionPerformed(java.awt.event.ActionE
                     setTitle(Settings.getInstance().getWindowTitleText());
                 }
                 while (!stop && !mpController.isComplete()) {
-                    jProgressBar1.setValue((int) (((double) mpController.getTrackPosition() / 1000) / selectedTrack.getLength() * 100));
+                    jProgressBar1.setValue((int) (((double) mpController.getTrackPosition() / 1000) / selectedTrack.getLength() * 100));                    
                     Thread.sleep(100);
                 }
                 /* continous play */

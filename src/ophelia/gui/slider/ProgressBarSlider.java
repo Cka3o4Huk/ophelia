@@ -8,6 +8,16 @@ public class ProgressBarSlider extends JSlider {
 	 * 
 	 */
 	private static final long serialVersionUID = 1L;
+	
+	protected boolean isDisable;
+	
+	public void disable() {
+		this.isDisable = true;
+	}
+	
+	public void enable() {
+		this.isDisable = false;
+	}
 
 	protected String text = "";
 
@@ -17,5 +27,9 @@ public class ProgressBarSlider extends JSlider {
 
 	public String getString() {
 		return text;
+	}
+	
+	public boolean isDisable() {
+		return isDisable;
 	}
 }
