@@ -1395,7 +1395,16 @@ private void jMenuItem_openDefaultPlaylistActionPerformed(java.awt.event.ActionE
                     setTitle(Settings.getInstance().getWindowTitleText());
                 }
                 while (!stop && !mpController.isComplete()) {
-                    jProgressBar1.setValue((int) (((double) mpController.getTrackPosition() / 1000) / selectedTrack.getLength() * 100));                    
+                	/* WARNING: 
+                	 * It have been noticed that on Windows XP method getTrackPosition 
+                	 * can return different values at pause state.
+                	 * TODO: 
+                	 * Behaviour of this method should be investigated on other platforms (Linux, MacOS, BSD). 
+                	 */                	
+                	double trackPositionMilliSec = mpController.getTrackPosition();
+                	int trackLengthSec = selectedTrack.getLength();
+                	double playPercentage = trackPositionMilliSec/(trackLengthSec * 10);
+                    jProgressBar1.setValue((int)playPercentage);                    
                     Thread.sleep(100);
                 }
                 /* continous play */
